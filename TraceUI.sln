@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TraceParser", ".\TraceParser\TraceParser.csproj", "{05C94581-EC52-480C-BC4C-7842D10D5F98}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TraceConsole", ".\TraceConsole\TraceConsole.csproj", "{828F6C75-12A5-44A6-8106-44DF0A22E87B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{05C94581-EC52-480C-BC4C-7842D10D5F98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05C94581-EC52-480C-BC4C-7842D10D5F98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05C94581-EC52-480C-BC4C-7842D10D5F98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05C94581-EC52-480C-BC4C-7842D10D5F98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{828F6C75-12A5-44A6-8106-44DF0A22E87B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{828F6C75-12A5-44A6-8106-44DF0A22E87B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{828F6C75-12A5-44A6-8106-44DF0A22E87B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{828F6C75-12A5-44A6-8106-44DF0A22E87B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
