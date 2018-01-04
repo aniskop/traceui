@@ -188,17 +188,10 @@ namespace TraceUI.Reports
                 NewLine();
                 WriteLine(cursor.Statement);
 
-                if (previousEntry != null && (previousEntry.Type == TraceEntryType.Xctend))
+                if (bindsCache.ContainsKey(entry.CursorId))
                 {
-                    WriteCommitRollback((XctendEntry)previousEntry);
-                }
-                else
-                {
-                    if (bindsCache.ContainsKey(entry.CursorId))
-                    {
-                        BindsEntry binds = bindsCache[entry.CursorId];
-                        WriteParams(binds);
-                    }
+                    BindsEntry binds = bindsCache[entry.CursorId];
+                    WriteParams(binds);
                 }
             }
         }
@@ -229,24 +222,8 @@ namespace TraceUI.Reports
 
         private void WriteCommitRollback(XctendEntry entry)
         {
-
-            if (entry.Rollback.Value == XctendEntry.ROLLBACK)
-            {
-                WriteLine("  transaction rolled back");
-            }
-            else
-            {
-                WriteLine("  transaction committed");
-            }
-
-            if (entry.ReadOnly.Value == XctendEntry.READ_ONLY)
-            {
-                WriteLine("  transaction modified no data");
-            }
-            else
-            {
-                WriteLine("  transaction modified some data");
-            }
+            WriteLine("  rollback  = {0}", (entry.Rollback.Value == XctendEntry.ROLLBACK) ? "yes" : "no (commit)");
+            WriteLine("  read only = {0}", (entry.ReadOnly.Value == XctendEntry.READ_ONLY) ? "yes (no data changed)" : "no (data has changed)");
         }
 
         protected override void Parser_FetchDetected(object sender, FetchEventArgs e)
@@ -340,7 +317,12 @@ namespace TraceUI.Reports
 
         protected override void Parser_XctendDetected(object sender, XctendEventArgs e)
         {
+            XctendEntry entry = e.Value;
             SetCurrentEntry(e.Value);
+
+            Hr();
+            WriteNameAndPosition("END OF TRANSACTION", entry);
+            WriteCommitRollback(entry);
         }
 
         protected override void Parser_UnrecognizedDetected(object sender, UnrecognizedEntryEventArgs e)
