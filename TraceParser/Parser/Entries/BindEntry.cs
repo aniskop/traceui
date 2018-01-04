@@ -191,7 +191,6 @@ namespace TraceUI.Parser.Entries
 
         internal override void SetProperties(List<StringProperty> properties)
         {
-            int idx = 0;
             foreach (StringProperty p in properties)
             {
                 if (p.Name.Equals(Property.ORACE_DATATYPE))
@@ -268,7 +267,6 @@ namespace TraceUI.Parser.Entries
                 {
                     Value = p.Value;
                 }
-                Index = idx++;
             }
         }
     }
