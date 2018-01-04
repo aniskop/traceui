@@ -46,6 +46,9 @@ namespace TraceUI.CommandLine
             AbstractReport rep = new TextReport(app.resultFilePath, new TraceParser(new TraceFileLexer(app.traceFilePath)), settings);
             rep.ProgressChanged += app.Report_ProgressChanged;
             rep.Generate();
+#if DEBUG
+            Console.ReadKey();
+#endif
             Environment.Exit(0);
         }
 
