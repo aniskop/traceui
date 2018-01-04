@@ -3,9 +3,12 @@ using TraceUI.Reports;
 using TraceUI.Parser;
 using TraceUI.Reports.Events;
 using System.IO;
+using System.Reflection;
+
 
 namespace TraceUI.CommandLine
 {
+
     public class TraceConsole
     {
         private const string COMMAND_SYSTEM = "-s";
@@ -23,6 +26,8 @@ namespace TraceUI.CommandLine
         {
             TraceConsole app = new TraceConsole();
             ReportSettings settings = ReportSettings.DefaultSettings;
+
+            app.PrintHeader();
 
             if (args == null || args.Length == 0)
             {
@@ -105,7 +110,7 @@ namespace TraceUI.CommandLine
 
             if (!sourceFilePresent || !resultFilePresent)
             {
-                //to-do: raise error - insufficient parameters
+                //todo: raise error - insufficient parameters
             }
         }
 
@@ -114,6 +119,14 @@ namespace TraceUI.CommandLine
             string directory = Path.GetDirectoryName(sourceFilePath);
             string name = Path.GetFileNameWithoutExtension(sourceFilePath);
             return directory + "\\" + name + ".report.txt";
+        }
+
+        private void PrintHeader()
+        {
+            Assembly currentAssembly = Assembly.GetExecutingAssembly();
+            AssemblyTitleAttribute titleAttribute = (AssemblyTitleAttribute)currentAssembly.GetCustomAttribute(typeof(AssemblyTitleAttribute));
+            Console.WriteLine("{0} version {1}", titleAttribute.Title, currentAssembly.GetName().Version.ToString());
+            Console.WriteLine();
         }
     }
 }
