@@ -452,6 +452,9 @@ namespace TraceUI.Parser
 
             XctendEntry result = new XctendEntry();
 
+            lexer.SkipUntil(TraceLexer.SPACE);
+            lexer.SkipSpaces();
+
             result.SetProperties(ReadProperties(TraceLexer.COMMA));
             result.LineRange = new Range(startingLineNumber, lexer.CurrentLineNumber);
             result.PositionRange = new Range(startingPosition, lexer.CurrentLinePositionEnd);
