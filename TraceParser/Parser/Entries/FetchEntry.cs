@@ -2,73 +2,136 @@
 
 namespace TraceUI.Parser.Entries
 {
+    /// <summary>
+    /// Represents a fetch operation (<code>FETCH</code> entry) in Oracle trace.
+    /// </summary>
     public class FetchEntry : TraceEntry
     {
+        /// <summary>
+        /// Creates an instance of <see cref="FetchEntry"/>.
+        /// </summary>
+        /// <param name="cursorId">Cursor ID of the statement.</param>
         public FetchEntry(string cursorId) : base(cursorId)
         {
             Type = TraceEntryType.Fetch;
         }
 
-        public LongProperty C
+        /// <summary>
+        /// CPU time consumed by the statement.
+        /// In Oracle 9i and above in microseconds, below 9i in centiseconds.
+        /// Value source is <see cref="Property.CPU_TIME"/> property.
+        /// </summary>
+        public LongProperty CpuTime
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Time consumed by the operation.
+        /// In Oracle 9i and above in microseconds, below 9i in centiseconds.
+        /// Value source is <see cref="Property.WALL_TIME_ELAPSED"/> property.
+        /// </summary>
         public LongProperty Elapsed
         {
             get;
             private set;
         }
 
-        public LongProperty P
+        /// <summary>
+        /// Number of physical reads.
+        /// Value source is <see cref="Property.PHYSICAL_READS"/> property.
+        /// </summary>
+        public LongProperty PhysicalReads
         {
             get;
             private set;
         }
 
-        public LongProperty Cr
+        /// <summary>
+        /// Number of buffers retrieved for consistent reads.
+        /// Value source is <see cref="Property.CONSISTENT_READS"/> property.
+        /// </summary>
+        public LongProperty ConsistentReads
         {
             get;
             private set;
         }
 
-        public LongProperty Cu
+        /// <summary>
+        /// Number of buffers retrieved in current mode.
+        /// Value source is <see cref="Property.CURRENT_READS"/> property.
+        /// </summary>
+        public LongProperty CurrentReads
         {
             get;
             private set;
         }
 
-        public LongProperty Mis
+        /// <summary>
+        /// Cursor missed in the cache.
+        /// Value source is <see cref="Property.LIBRARY_CACHE_MISS"/> property.
+        /// </summary>
+        public LongProperty CursorMissed
         {
             get;
             private set;
         }
 
-        public LongProperty R
+        /// <summary>
+        /// Number of rows fetched.
+        /// Value source is <see cref="Property.ROWS"/> property.
+        /// </summary>
+        public LongProperty Rows
         {
             get;
             private set;
         }
 
-        public LongProperty Dep
+        /// <summary>
+        /// Recursive call depth:
+        /// <list type="bullet">
+        /// <item>
+        ///     <term>0</term>
+        ///     <description>User call.</description>
+        /// </item>
+        /// <item>
+        ///     <term>&gt;0</term>
+        ///     <description>Recursive call.</description>
+        /// </item>
+        /// </list>
+        /// Value source is <see cref="Property.RECURSIVE_DEPTH"/> property.
+        /// </summary>
+        public LongProperty Depth
         {
             get;
             private set;
         }
 
-        public LongProperty Og
+        /// <summary>
+        /// Optimizer goal.
+        /// See <see cref="Entries.OptimizerGoal"/> for possible values.
+        /// Value source is <see cref="Property.OPTIMIZER_GOAL"/> property.
+        /// </summary>
+        public LongProperty OptimizerGoal
         {
             get;
             private set;
         }
 
+        //todo: define purpose
         public LongProperty Plh
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Timestamp.
+        /// Can be used to determine the time between any 2 operations.
+        /// In Oracle 9i and above in microseconds, below 9i in centiseconds.
+        /// Value source is <see cref="Property.TIMESTAMP"/> property.
+        /// </summary>
         public ULongProperty Timestamp
         {
             get;
@@ -81,7 +144,7 @@ namespace TraceUI.Parser.Entries
             {
                 if (p.Name.Equals(Property.CPU_TIME))
                 {
-                    C = LongProperty.Convert(p);
+                    CpuTime = LongProperty.Convert(p);
                 }
                 else if (p.Name.Equals(Property.WALL_TIME_ELAPSED))
                 {
@@ -89,31 +152,31 @@ namespace TraceUI.Parser.Entries
                 }
                 else if (p.Name.Equals(Property.PHYSICAL_READS))
                 {
-                    P = LongProperty.Convert(p);
+                    PhysicalReads = LongProperty.Convert(p);
                 }
                 else if (p.Name.Equals(Property.CONSISTENT_READS))
                 {
-                    Cr = LongProperty.Convert(p);
+                    ConsistentReads = LongProperty.Convert(p);
                 }
                 else if (p.Name.Equals(Property.CURRENT_READS))
                 {
-                    Cu = LongProperty.Convert(p);
+                    CurrentReads = LongProperty.Convert(p);
                 }
                 else if (p.Name.Equals(Property.LIBRARY_CACHE_MISS))
                 {
-                    Mis = LongProperty.Convert(p);
+                    CursorMissed = LongProperty.Convert(p);
                 }
                 else if (p.Name.Equals(Property.ROWS))
                 {
-                    R = LongProperty.Convert(p);
+                    Rows = LongProperty.Convert(p);
                 }
                 else if (p.Name.Equals(Property.RECURSIVE_DEPTH))
                 {
-                    Dep = LongProperty.Convert(p);
+                    Depth = LongProperty.Convert(p);
                 }
                 else if (p.Name.Equals(Property.OPTIMIZER_GOAL))
                 {
-                    Og = LongProperty.Convert(p);
+                    OptimizerGoal = LongProperty.Convert(p);
                 }
                 else if (p.Name.Equals(Property.PLH))
                 {

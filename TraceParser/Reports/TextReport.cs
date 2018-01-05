@@ -185,7 +185,7 @@ namespace TraceUI.Reports
                 WriteLine("  cursor#           = {0}", entry.CursorId);
                 WriteLine("  sqlid             = {0}", cursor.SqlId.Value);
                 WriteLine("  elapsed           = {0}", entry.Elapsed.Value);
-                WriteLine("  CPU time consumed = {0}", entry.CpuTimeConsumed.Value);
+                WriteLine("  CPU time consumed = {0}", entry.CpuTime.Value);
                 WriteLine("  rows returned     = {0}", entry.RowsReturned.Value);
 
                 NewLine();
@@ -238,6 +238,10 @@ namespace TraceUI.Reports
             {
                 Hr();
                 WriteNameAndPosition("FETCH", entry);
+                WriteLine("  rows            = {0}", entry.Rows.Value.ToString());
+                WriteLine("  elapsed         = {0} us", entry.Elapsed.Value.ToString());
+                WriteLine("  recursive depth = {0}", entry.Depth.Value.ToString());
+                WriteLine("  optimizer goal  = {0}", entry.OptimizerGoal.Value.ToString());
             }
         }
 
@@ -270,6 +274,7 @@ namespace TraceUI.Reports
 
             if (MustBeIncluded(cursor))
             {
+                NewLine();
                 WriteNameAndPosition("STATS", entry);
                 WriteLine("  cursor# = {0}", entry.CursorId);
                 NewLine();
