@@ -16,7 +16,7 @@ namespace TraceUI.Parser.Entries
         /// CPU time consumed by the statement.
         /// In Oracle 9i and above in microseconds, below 9i in centiseconds.
         /// </summary>
-        public LongProperty CpuTimeConsumed
+        public LongProperty CpuTime
         {
             get;
             private set;
@@ -116,7 +116,7 @@ namespace TraceUI.Parser.Entries
             {
                 if (p.Name.Equals(Property.CPU_TIME))
                 {
-                    CpuTimeConsumed = LongProperty.Convert(p);
+                    CpuTime = LongProperty.Convert(p);
                 }
                 else if (p.Name.Equals(Property.WALL_TIME_ELAPSED))
                 {
