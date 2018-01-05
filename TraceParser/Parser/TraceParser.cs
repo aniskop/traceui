@@ -537,76 +537,7 @@ namespace TraceUI.Parser
             return props;
         }
         #endregion
-        /*private int EndOfBinds(int fromLine)
-        {
-            int i = fromLine;
-
-            while (traceViewer.Lines[i].Text.StartsWith("  ") || traceViewer.Lines[i].Text.StartsWith(TraceWalker.BIND))
-            {
-                i++;
-            }
-
-            return traceViewer.Lines[i - 1].EndPosition;
-        }
-
-        private int EndOfBind(int fromLine)
-        {
-            int i = fromLine;
-
-            while (traceViewer.Lines[i].Text.StartsWith("  "))
-            {
-                i++;
-            }
-
-            return traceViewer.Lines[i - 1].EndPosition;
-        }
-
-        private int StartOfStat(int fromLine)
-        {
-            int i = fromLine;
-
-            while (traceViewer.Lines[i].Text.StartsWith(TraceWalker.STAT))
-            {
-                i--;
-            }
-
-            return traceViewer.Lines[i + 1].Position;
-        }
-
-
-        private int EndOfStat(int fromLine)
-        {
-            int i = fromLine;
-
-            while (traceViewer.Lines[i].Text.StartsWith(TraceWalker.STAT))
-            {
-                i++;
-            }
-
-            return traceViewer.Lines[i - 1].EndPosition;
-        }
-
-        public void HighlightCurrentEntry()
-        {
-            Range r = GetCurrentEntryRange();
-            //MessageBox.Show("Entry starts at " + r.StartPosition + " ends at " + r.EndPosition);
-            if (!r.Empty)
-            {
-                if (!currentHighlightRange.Empty)
-                {
-                    traceViewer.IndicatorClearRange(currentHighlightRange.StartPosition, currentHighlightRange.Length);
-                }
-                traceViewer.IndicatorCurrent = CURRENT_ENTRY_INDICATOR;
-                traceViewer.IndicatorFillRange(r.Start, r.Length);
-                currentHighlightRange = r;
-            }
-        }
-
-        private void InitializeCurrentEntryIndicator()
-        {
-            traceViewer.Indicators[CURRENT_ENTRY_INDICATOR].Style = IndicatorStyle.FullBox;
-            traceViewer.Indicators[CURRENT_ENTRY_INDICATOR].ForeColor = Color.Red;
-        }*/
+        
 
         #region Event raisers
         protected virtual void OnBindsDetected(BindsEventArgs e)
