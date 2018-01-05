@@ -77,7 +77,17 @@ namespace TraceUI.Parser.Entries
         }
 
         /// <summary>
-        /// Recursive depth of cursor.
+        /// Recursive call depth:
+        /// <list type="bullet">
+        /// <item>
+        ///     <term>0</term>
+        ///     <description>User call.</description>
+        /// </item>
+        /// <item>
+        ///     <term>&gt;0</term>
+        ///     <description>Recursive call.</description>
+        /// </item>
+        /// </list>
         /// </summary>
         public LongProperty Depth
         {
