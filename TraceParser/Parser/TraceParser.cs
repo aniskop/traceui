@@ -435,9 +435,58 @@ namespace TraceUI.Parser
                     {
                         lexer.NextLine();
                         lexer.SkipSpaces();
-                        result.SetProperties(ReadProperties(TraceLexer.SPACE));
+                        if (lexer.CurrentLine.StartsWith("  value="))
+                        {
+                            result.SetProperties(ReadBindValue(result));
+                        }
+                        else
+                        {
+                            result.SetProperties(ReadProperties(TraceLexer.SPACE));
+                        }
                     }
                 }
+            }
+
+            return result;
+        }
+
+        private List<StringProperty> ReadBindValue(BindEntry bind)
+        {
+            /* Value property has structure:
+             * value="8/22/2016 11:8:57"
+             * value=238
+             * value="multi
+             * line value"
+             * 
+             * Value property is absent, when value is null.
+             */
+            lexer.SkipUntil(TraceLexer.EQUALS);
+            lexer.Skip();
+
+            List<StringProperty> result = new List<StringProperty>();
+            if (lexer.CurrentChar == TraceLexer.DOUBLE_QUOT)
+            {
+                // String property, can be multi-line.
+                bool singleLineValue = (lexer.CurrentLine.EndsWith("\""));
+                if (singleLineValue)
+                {
+                    result.Add(new StringProperty(Property.VALUE, lexer.ReadLine()));
+                }
+                else
+                {
+                    StringBuilder value = new StringBuilder();
+                    while (!lexer.CurrentLine.EndsWith("\""))
+                    {
+                        value.AppendLine(lexer.ReadLine());
+                        lexer.NextLine();
+                    }
+                    value.AppendLine(lexer.ReadLine()); // Read the last line of value
+                    result.Add(new StringProperty(Property.VALUE, value.ToString()));
+                }
+            }
+            else
+            {
+                result.Add(new StringProperty(Property.VALUE, lexer.ReadLine()));
             }
 
             return result;
@@ -537,7 +586,7 @@ namespace TraceUI.Parser
             return props;
         }
         #endregion
-        
+
 
         #region Event raisers
         protected virtual void OnBindsDetected(BindsEventArgs e)

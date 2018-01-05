@@ -188,7 +188,7 @@ namespace TraceUI.Reports
                 WriteLine("  rows processed = {0}", entry.RowsProcessed.Value);
 
                 NewLine();
-                WriteTrimmedStatement(cursor);
+                WriteFullStatement(cursor);
 
                 if (bindsCache.ContainsKey(entry.CursorId))
                 {
