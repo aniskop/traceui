@@ -113,7 +113,7 @@ namespace TraceUI.Parser.Entries
         /// See <see cref="Entries.OptimizerGoal"/> for possible values.
         /// Value source is <see cref="Property.OPTIMIZER_GOAL"/> property.
         /// </summary>
-        public LongProperty OptimizerGoal
+        public IntProperty OptimizerGoal
         {
             get;
             private set;
@@ -176,7 +176,7 @@ namespace TraceUI.Parser.Entries
                 }
                 else if (p.Name.Equals(Property.OPTIMIZER_GOAL))
                 {
-                    OptimizerGoal = LongProperty.Convert(p);
+                    OptimizerGoal = IntProperty.Convert(p);
                 }
                 else if (p.Name.Equals(Property.PLH))
                 {

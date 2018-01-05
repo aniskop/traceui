@@ -60,7 +60,7 @@ namespace TraceUI.Parser.Entries
             private set;
         }
 
-        public LongProperty Og
+        public IntProperty Og
         {
             get;
             private set;
@@ -116,7 +116,7 @@ namespace TraceUI.Parser.Entries
                 }
                 else if (p.Name.Equals(Property.OPTIMIZER_GOAL))
                 {
-                    Og = LongProperty.Convert(p);
+                    Og = IntProperty.Convert(p);
                 }
                 else if (p.Name.Equals(Property.PLH))
                 {

@@ -240,7 +240,7 @@ namespace TraceUI.Reports
                 WriteLine("  rows            = {0}", entry.Rows.Value.ToString());
                 WriteLine("  elapsed         = {0} us", entry.Elapsed.Value.ToString());
                 WriteLine("  recursive depth = {0}", entry.Depth.Value.ToString());
-                WriteLine("  optimizer goal  = {0}", entry.OptimizerGoal.Value.ToString());
+                WriteLine("  optimizer goal  = {0}", OptimizerGoal.ToString(entry.OptimizerGoal.Value));
             }
         }
 
@@ -255,12 +255,12 @@ namespace TraceUI.Reports
             {
                 Hr();
                 WriteNameAndPosition("PARSE", entry);
-                WriteLine("  cursor#          = {0}", cursor.CursorId);
-                WriteLine("  sqlid            = {0}", cursor.SqlId.Value);
-                WriteLine("  calling user id  = {0}", cursor.Uid.Value);
-                WriteLine("  statement length = {0}", cursor.Length.Value);
+                WriteLine("  cursor#        = {0}", cursor.CursorId);
+                WriteLine("  sqlid          = {0}", cursor.SqlId.Value);
+                WriteLine("  elapsed        = {0} us", entry.Elapsed.Value);
+                WriteLine("  optimizer goal = {0}", OptimizerGoal.ToString(entry.Og.Value));
                 NewLine();
-                WriteFullStatement(cursor);
+                WriteTrimmedStatement(cursor);
             }
         }
 
@@ -320,6 +320,21 @@ namespace TraceUI.Reports
             SetCurrentEntry(entry);
             AddCursorToCache(entry);
             RemoveBindsFromCache(entry.CursorId);
+
+            if (MustBeIncluded(entry))
+            {
+                Hr();
+                WriteNameAndPosition("PARSING IN CURSOR", entry);
+                WriteLine("  cursor#          = {0}", entry.CursorId);
+                WriteLine("  sqlid            = {0}", entry.SqlId.Value);
+                WriteLine("  hash value       = {0}", entry.HashValue.Value);
+                WriteLine("  address          = {0}", entry.Address.Value);
+                WriteLine("  calling user id  = {0}", entry.CallingUserId.Value);
+                WriteLine("  owning user id   = {0}", entry.OwningUserId.Value);
+                WriteLine("  statement length = {0}", entry.Length.Value);
+                NewLine();
+                WriteFullStatement(entry);
+            }
         }
 
         protected override void Parser_XctendDetected(object sender, XctendEventArgs e)

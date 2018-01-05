@@ -44,7 +44,7 @@
         /// <summary>
         /// Library cache address assigned in V$SQL.
         /// </summary>
-        public const string LIBRARY_CACHE_ADDRESS = "ad";
+        public const string ADDRESS = "ad";
 
         /// <summary>
         /// Id of the SQL statement.
