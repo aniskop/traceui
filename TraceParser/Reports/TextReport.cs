@@ -182,11 +182,10 @@ namespace TraceUI.Reports
             {
                 Hr();
                 WriteNameAndPosition("EXECUTE", entry);
-                WriteLine("  cursor#           = {0}", entry.CursorId);
-                WriteLine("  sqlid             = {0}", cursor.SqlId.Value);
-                WriteLine("  elapsed           = {0}", entry.Elapsed.Value);
-                WriteLine("  CPU time consumed = {0}", entry.CpuTime.Value);
-                WriteLine("  rows returned     = {0}", entry.RowsReturned.Value);
+                WriteLine("  cursor#        = {0}", entry.CursorId);
+                WriteLine("  sqlid          = {0}", cursor.SqlId.Value);
+                WriteLine("  elapsed        = {0} us", entry.Elapsed.Value);
+                WriteLine("  rows processed = {0}", entry.RowsProcessed.Value);
 
                 NewLine();
                 WriteTrimmedStatement(cursor);
@@ -211,7 +210,7 @@ namespace TraceUI.Reports
                         WriteLine(string.Format("  bind{0} = {1}", bind.Index, bind.Value));
                         WriteLine("    datatype      = {0}", OracleDatatype.ToString(bind.Datatype.Value));
                         WriteLine("    actual length = {0} bytes", bind.ActualLength.Value);
-                        WriteLine(string.Format("    max length    = {0} bytes, {1} chars", bind.MaxLength.Value, bind.MaxLengthCharacters.Value));
+                        WriteLine("    max length    = {0} bytes", bind.MaxLength.Value);
                     }
                     else
                     {

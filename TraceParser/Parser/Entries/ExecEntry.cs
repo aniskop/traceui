@@ -70,7 +70,7 @@ namespace TraceUI.Parser.Entries
         /// <summary>
         /// Number of rows returned.
         /// </summary>
-        public LongProperty RowsReturned
+        public LongProperty RowsProcessed
         {
             get;
             private set;
@@ -150,7 +150,7 @@ namespace TraceUI.Parser.Entries
                 }
                 else if (p.Name.Equals(Property.ROWS))
                 {
-                    RowsReturned = LongProperty.Convert(p);
+                    RowsProcessed = LongProperty.Convert(p);
                 }
                 else if (p.Name.Equals(Property.RECURSIVE_DEPTH))
                 {
