@@ -11,6 +11,9 @@ namespace TraceUI.Reports
 
     public class TextReport : AbstractReport
     {
+
+        private const int STATEMENT_TRIM_LENGTH = 100;
+
         private StreamWriter eventsTempFile;
 
         private string eventsTempFilePath;
@@ -186,7 +189,7 @@ namespace TraceUI.Reports
                 WriteLine("  rows returned     = {0}", entry.RowsReturned.Value);
 
                 NewLine();
-                WriteLine(cursor.Statement);
+                WriteTrimmedStatement(cursor);
 
                 if (bindsCache.ContainsKey(entry.CursorId))
                 {
@@ -254,7 +257,7 @@ namespace TraceUI.Reports
                 WriteLine("  calling user id  = {0}", cursor.Uid.Value);
                 WriteLine("  statement length = {0}", cursor.Length.Value);
                 NewLine();
-                WriteLine(cursor.Statement);
+                WriteFullStatement(cursor);
             }
         }
 
@@ -301,7 +304,7 @@ namespace TraceUI.Reports
 
                 if (!WaitEntry.SYSTEM_WAIT_CURSOR_ID.Equals(cursor.CursorId))
                 {
-                    WriteLine(cursor.Statement);
+                    WriteTrimmedStatement(cursor);
                     NewLine();
                 }
             }
@@ -394,6 +397,24 @@ namespace TraceUI.Reports
         {
             get;
             set;
+        }
+
+        private void WriteFullStatement(ParsingInCursorEntry entry)
+        {
+            WriteLine(entry.Statement);
+        }
+
+        private void WriteTrimmedStatement(ParsingInCursorEntry entry)
+        {
+            if (entry.Statement.Length > STATEMENT_TRIM_LENGTH)
+            {
+                WriteLine(entry.Statement.Substring(0, STATEMENT_TRIM_LENGTH) + "...");
+            }
+            else
+            {
+                WriteLine(entry.Statement);
+            }
+
         }
     }
 }
