@@ -362,7 +362,7 @@ namespace TraceUI.Reports
         private void WriteFooter()
         {
             eventsTempFile.WriteLine();
-            eventsTempFile.WriteLine("For details on reading raw trace output refer to \"Interpreting Raw SQL_TRACE output (Doc ID 39817.1)\" at support.oracle com (ex Metalink).");
+            eventsTempFile.WriteLine("For details on reading raw trace output refer to \"Interpreting Raw SQL_TRACE output (Doc ID 39817.1)\" at support.oracle.com (ex Metalink).");
         }
         /// <summary>
         /// Checks whether information realated to given cursor must be inluded in the report.
