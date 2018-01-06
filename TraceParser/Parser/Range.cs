@@ -2,12 +2,12 @@
 {
     public struct Range
     {
-        public readonly int Start;
-        public readonly int End;
-        public readonly int Length;
+        public readonly long Start;
+        public readonly long End;
+        public readonly long Length;
         public readonly bool Empty;
 
-        public Range(int start, int end)
+        public Range(long start, long end)
         {
             Start = start;
             End = end;

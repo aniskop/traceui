@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 
 namespace TraceUI.Parser
@@ -15,8 +11,8 @@ namespace TraceUI.Parser
         private StreamReader traceStream;
         private string lineText = "";
         private string nextLineText = null;
-        private int lineNumber = 0;
-        private int absoluteLineOffsetInFile = 0;
+        private long lineNumber = 0;
+        private long absoluteLineOffsetInFile = 0;
 
         public TraceFileLexer(string filePath)
         {
@@ -33,7 +29,7 @@ namespace TraceUI.Parser
             }
         }
 
-        public override int CurrentLineNumber
+        public override long CurrentLineNumber
         {
             get
             {
@@ -49,7 +45,7 @@ namespace TraceUI.Parser
             }
         }
 
-        public override int CurrentLinePositionEnd
+        public override long CurrentLinePositionEnd
         {
             get
             {
@@ -57,7 +53,7 @@ namespace TraceUI.Parser
             }
         }
 
-        public override int CurrentLinePositionStart
+        public override long CurrentLinePositionStart
         {
             get
             {
@@ -65,7 +61,7 @@ namespace TraceUI.Parser
             }
         }
 
-        public override int CurrentPosition
+        public override long CurrentPosition
         {
             get
             {

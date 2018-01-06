@@ -205,7 +205,7 @@
         /// <summary>
         /// Gets a zero-based offset from the beginning of the source where the <see cref="CurrentLine"/> begins.
         /// </summary>
-        public abstract int CurrentLinePositionStart
+        public abstract long CurrentLinePositionStart
         {
             get;
         }
@@ -213,7 +213,7 @@
         /// <summary>
         /// Gets a zero-based offset from the beginning of the source where the <see cref="CurrentLine"/> ends.
         /// </summary>
-        public abstract int CurrentLinePositionEnd
+        public abstract long CurrentLinePositionEnd
         {
             get;
         }
@@ -221,7 +221,7 @@
         /// <summary>
         /// Gets or sets current line number in trace source.
         /// </summary>
-        public abstract int CurrentLineNumber
+        public abstract long CurrentLineNumber
         {
             get;
             set;
@@ -230,7 +230,7 @@
         /// <summary>
         /// Gets or sets current caret position (zero-based from beginning of the source).
         /// </summary>
-        public abstract int CurrentPosition
+        public abstract long CurrentPosition
         {
             get;
             set;

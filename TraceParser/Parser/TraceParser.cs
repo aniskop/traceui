@@ -135,7 +135,7 @@ namespace TraceUI.Parser
         public TraceEntry ParseEntryAtLine(int lineNumber)
         {
             TraceEntry result = null;
-            int startingLine = lexer.CurrentLineNumber;
+            long startingLine = lexer.CurrentLineNumber;
 
             lexer.CurrentLineNumber = lineNumber;
 
@@ -201,8 +201,8 @@ namespace TraceUI.Parser
             // PARSING IN CURSOR #139816334997528 len=271 dep=1 uid=0 oct=3 lid=0 tim=2673974624982 hv=3876120609 ad='6176d328' sqlid='f0h5rpzmhju11'
             // select SYS_CONTEXT('USERENV', 'SERVER_HOST'), SYS_CONTEXT('USERENV', 'DB_UNIQUE_NAME') from v$instance
             // END OF STMT
-            int startingLineNumber = lexer.CurrentLineNumber;
-            int startingPosition = lexer.CurrentLinePositionStart;
+            long startingLineNumber = lexer.CurrentLineNumber;
+            long startingPosition = lexer.CurrentLinePositionStart;
 
             ParsingInCursorEntry result = new ParsingInCursorEntry(ReadCursorId(TraceLexer.SPACE));
             result.SetProperties(ReadProperties(TraceLexer.SPACE));
@@ -228,8 +228,8 @@ namespace TraceUI.Parser
         {
             // Sample entry:
             // PARSE #139816334997528:c=1000,e=1701,p=0,cr=0,cu=0,mis=1,r=0,dep=1,og=4,plh=2529664852,tim=2673974624981
-            int startingLineNumber = lexer.CurrentLineNumber;
-            int startingPosition = lexer.CurrentLinePositionStart;
+            long startingLineNumber = lexer.CurrentLineNumber;
+            long startingPosition = lexer.CurrentLinePositionStart;
 
             ParseEntry result = new ParseEntry(ReadCursorId(TraceLexer.COLON));
             result.SetProperties(ReadProperties(TraceLexer.COMMA));
@@ -243,8 +243,8 @@ namespace TraceUI.Parser
         {
             // Sample entry:
             // EXEC #139816334999680:c=2997,e=2458,p=0,cr=3,cu=2,mis=1,r=1,dep=1,og=4,plh=2447725225,tim=2673974623050
-            int startingLineNumber = lexer.CurrentLineNumber;
-            int startingPosition = lexer.CurrentLinePositionStart;
+            long startingLineNumber = lexer.CurrentLineNumber;
+            long startingPosition = lexer.CurrentLinePositionStart;
 
             ExecEntry result = new ExecEntry(ReadCursorId(TraceLexer.COLON));
             result.SetProperties(ReadProperties(TraceLexer.COMMA));
@@ -258,8 +258,8 @@ namespace TraceUI.Parser
         {
             // Sample entry:
             // CLOSE #139816334997528:c=0,e=61,dep=1,type=0,tim=2673974625375
-            int startingLineNumber = lexer.CurrentLineNumber;
-            int startingPosition = lexer.CurrentLinePositionStart;
+            long startingLineNumber = lexer.CurrentLineNumber;
+            long startingPosition = lexer.CurrentLinePositionStart;
 
             CloseEntry result = new CloseEntry(ReadCursorId(TraceLexer.COLON));
             result.SetProperties(ReadProperties(TraceLexer.COMMA));
@@ -273,8 +273,8 @@ namespace TraceUI.Parser
         {
             // Sample entry:
             // FETCH #139816334996272:c=998,e=289,p=0,cr=3,cu=0,mis=0,r=0,dep=2,og=4,plh=2542797530,tim=2673974636017
-            int startingLineNumber = lexer.CurrentLineNumber;
-            int startingPosition = lexer.CurrentLinePositionStart;
+            long startingLineNumber = lexer.CurrentLineNumber;
+            long startingPosition = lexer.CurrentLinePositionStart;
 
             FetchEntry result = new FetchEntry(ReadCursorId(TraceLexer.COLON));
             result.SetProperties(ReadProperties(TraceLexer.COMMA));
@@ -288,8 +288,8 @@ namespace TraceUI.Parser
         {
             // Sample entry:
             // WAIT #0: nam='SQL*Net message to client' ela= 3 driver id=1413697536 #bytes=1 p3=0 obj#=-1 tim=2673974642876
-            int startingLineNumber = lexer.CurrentLineNumber;
-            int startingPosition = lexer.CurrentLinePositionStart;
+            long startingLineNumber = lexer.CurrentLineNumber;
+            long startingPosition = lexer.CurrentLinePositionStart;
 
             WaitEntry result = new WaitEntry(ReadCursorId(TraceLexer.COLON));
 
@@ -313,8 +313,8 @@ namespace TraceUI.Parser
             StatEntry result = new StatEntry(cursorId);
 
             GoToStartOfStat(cursorId);
-            int startingLineNumber = lexer.CurrentLineNumber;
-            int startingPosition = lexer.CurrentLinePositionStart;
+            long startingLineNumber = lexer.CurrentLineNumber;
+            long startingPosition = lexer.CurrentLinePositionStart;
 
             while (true)
             {
@@ -325,13 +325,9 @@ namespace TraceUI.Parser
                 result.AddLine(line);
                 if (lexer.NextLinePreview() == null || !lexer.NextLinePreview().StartsWith(STAT + cursorId))
                 {
-                    //lexer.NextLine();
-                    /*if (lexer.EndOfSource() || !lexer.CurrentLine.StartsWith(STAT + cursorId))
-                    {*/
                     result.LineRange = new Range(startingLineNumber, line.LineRange.End);
                     result.PositionRange = new Range(startingPosition, line.PositionRange.End);
                     break;
-                    //}
                 }
                 lexer.NextLine();
             }
@@ -380,8 +376,8 @@ namespace TraceUI.Parser
                  kxsbbbfp = 7f2986fb3c38  bln = 22  avl = 03  flg = 05
                  value = 238
                */
-            int startingLineNumber = lexer.CurrentLineNumber;
-            int startingPosition = lexer.CurrentLinePositionStart;
+            long startingLineNumber = lexer.CurrentLineNumber;
+            long startingPosition = lexer.CurrentLinePositionStart;
 
             BindsEntry result = new BindsEntry(ReadCursorId(TraceLexer.COLON));
 
@@ -496,8 +492,8 @@ namespace TraceUI.Parser
         {
             // Sample entry:
             // XCTEND rlbk=0, rd_only=0, tim=2673977182044
-            int startingLineNumber = lexer.CurrentLineNumber;
-            int startingPosition = lexer.CurrentLinePositionStart;
+            long startingLineNumber = lexer.CurrentLineNumber;
+            long startingPosition = lexer.CurrentLinePositionStart;
 
             XctendEntry result = new XctendEntry();
 
@@ -513,8 +509,8 @@ namespace TraceUI.Parser
 
         private UnrecognizedEntry ParseUnrecognized()
         {
-            int startingLineNumber = lexer.CurrentLineNumber;
-            int startingPosition = lexer.CurrentLinePositionStart;
+            long startingLineNumber = lexer.CurrentLineNumber;
+            long startingPosition = lexer.CurrentLinePositionStart;
 
             UnrecognizedEntry result = new UnrecognizedEntry();
             result.Text = lexer.ReadLine();
