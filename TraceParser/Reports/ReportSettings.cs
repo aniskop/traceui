@@ -2,10 +2,10 @@
 {
     public class ReportSettings
     {
-        private static ReportSettings defaultSettings;
-
         public ReportSettings()
         {
+            IncludeSystemQueries = false;
+            IncludeWaits = true;
         }
 
         public bool IncludeSystemQueries
@@ -14,18 +14,10 @@
             set;
         }
 
-        public static ReportSettings DefaultSettings
+        public bool IncludeWaits
         {
-            get
-            {
-
-                if (defaultSettings == null)
-                {
-                    defaultSettings = new ReportSettings();
-                    defaultSettings.IncludeSystemQueries = false;
-                }
-                return defaultSettings;
-            }
+            get;
+            set;
         }
     }
 }

@@ -40,7 +40,7 @@ namespace TraceUI.Reports
             Parser.ProgressChanged += Parser_ProgressChanged;
         }
 
-        public TextReport(string reportPath, TraceParser parser) : this(reportPath, parser, ReportSettings.DefaultSettings)
+        public TextReport(string reportPath, TraceParser parser) : this(reportPath, parser, new ReportSettings())
         {
         }
 
@@ -295,7 +295,7 @@ namespace TraceUI.Reports
 
             ParsingInCursorEntry cursor = GetCursorFromCache(entry.CursorId);
 
-            if (MustBeIncluded(cursor))
+            if (MustBeIncluded(entry) && MustBeIncluded(cursor))
             {
                 Hr();
                 WriteNameAndPosition("WAIT", entry);
@@ -306,7 +306,7 @@ namespace TraceUI.Reports
                 WriteLine("  object id = {0}", entry.ObjectId.Value);
                 NewLine();
 
-                if (!WaitEntry.SYSTEM_WAIT_CURSOR_ID.Equals(cursor.CursorId))
+                if (!entry.IsSystemWait)
                 {
                     WriteTrimmedStatement(cursor);
                     NewLine();
@@ -399,6 +399,11 @@ namespace TraceUI.Reports
         private bool MustBeIncluded(string cursorId)
         {
             return MustBeIncluded(GetCursorFromCache(cursorId));
+        }
+
+        private bool MustBeIncluded(WaitEntry entry)
+        {
+            return Settings.IncludeWaits;
         }
 
         private void Hr()

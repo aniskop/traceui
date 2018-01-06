@@ -11,7 +11,8 @@ namespace TraceUI.CommandLine
 
     public class TraceConsole
     {
-        private const string COMMAND_SYSTEM = "-s";
+        private const string OPTION_SYSTEM = "--sys";
+        private const string OPTION_WAITS = "--wait";
 
         private AsciiProgressBar bar;
 
@@ -25,13 +26,16 @@ namespace TraceUI.CommandLine
         public static void Main(string[] args)
         {
             TraceConsole app = new TraceConsole();
-            ReportSettings settings = ReportSettings.DefaultSettings;
+            ReportSettings settings = new ReportSettings();
 
             app.PrintHeader();
 
             if (args == null || args.Length == 0)
             {
                 app.PrintUsage();
+#if DEBUG
+                Console.ReadKey();
+#endif
                 Environment.Exit(0);
             }
             else
@@ -62,12 +66,13 @@ namespace TraceUI.CommandLine
             Console.WriteLine("Converts Oracle trace file into more readable format.\n");
             Console.WriteLine("Usage: traceuic [options] trace_file_path [result_file_path]\n");
             Console.WriteLine("Options:");
-            Console.WriteLine("  {0}   Include system queries.", COMMAND_SYSTEM);
+            Console.WriteLine(("  " + OPTION_SYSTEM + "=yes|no").PadRight(20, ' ') + "Include system queries. Default is no.");
+            Console.WriteLine(("  " + OPTION_WAITS + "=yes|no").PadRight(20, ' ') + "Include wait events or no. Default is yes.");
         }
 
         private void ParseArguments(string[] args, out ReportSettings settings)
         {
-            settings = ReportSettings.DefaultSettings;
+            settings = new ReportSettings();
             bool sourceFilePresent = false;
             bool resultFilePresent = false;
             int i = 0;
@@ -79,11 +84,15 @@ namespace TraceUI.CommandLine
                     break;
                 }
 
-                if (args[i].StartsWith("-"))
+                if (args[i].StartsWith("--"))
                 {
-                    if (args[i].Equals(COMMAND_SYSTEM))
+                    if (args[i].StartsWith(OPTION_SYSTEM))
                     {
-                        settings.IncludeSystemQueries = true;
+                        settings.IncludeSystemQueries = ParseBooleanProperty(args[i]);
+                    }
+                    else if (args[i].StartsWith(OPTION_WAITS))
+                    {
+                        settings.IncludeWaits = ParseBooleanProperty(args[i]);
                     }
                     i++;
                 }
@@ -130,6 +139,12 @@ namespace TraceUI.CommandLine
             AssemblyTitleAttribute titleAttribute = (AssemblyTitleAttribute)currentAssembly.GetCustomAttribute(typeof(AssemblyTitleAttribute));
             Console.WriteLine("{0} version {1}", titleAttribute.Title, currentAssembly.GetName().Version.ToString());
             Console.WriteLine();
+        }
+
+        private bool ParseBooleanProperty(string property)
+        {
+            string[] tokens = property.Split('=');
+            return (tokens.Length == 2) ? tokens[1].Equals("yes", StringComparison.OrdinalIgnoreCase) : false;
         }
     }
 }

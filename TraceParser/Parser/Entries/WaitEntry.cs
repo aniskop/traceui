@@ -91,6 +91,27 @@ namespace TraceUI.Parser.Entries
             }
         }
 
+        /// <summary>
+        /// Determines if the wait is because of the system or some SQL statement.
+        /// <list type="bullet">
+        /// <item>
+        ///     <term>true</term>
+        ///     <description>System wait.</description>
+        /// </item>
+        /// <item>
+        ///     <term>false</term>
+        ///     <description>Otherwise (some SQL statement is waiting).</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        public bool IsSystemWait
+        {
+            get
+            {
+                return (SYSTEM_WAIT_CURSOR_ID.Equals(CursorId));
+            }
+        }
+
         internal override void SetProperties(List<StringProperty> properties)
         {
             foreach (StringProperty p in properties)
