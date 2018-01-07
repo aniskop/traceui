@@ -14,7 +14,7 @@ Oracle Trace Analyzer (trcanlzr) or whatever other diagnostic tool. It is suppos
 # Usage
 Syntax:
 ```
-traceui [options] input_file_name [output_file_name]
+traceuic [options] input_file_name [output_file_name]
 ```
 To see program help and all options:
 ```
