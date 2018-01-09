@@ -5,7 +5,7 @@
         public ReportSettings()
         {
             IncludeSystemQueries = false;
-            IncludeWaits = true;
+            IncludeWaits = false;
         }
 
         public bool IncludeSystemQueries

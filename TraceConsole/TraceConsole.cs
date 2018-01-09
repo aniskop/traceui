@@ -67,7 +67,7 @@ namespace TraceUI.CommandLine
             Console.WriteLine("Usage: traceuic [options] trace_file_path [result_file_path]\n");
             Console.WriteLine("Options:");
             Console.WriteLine(("  " + OPTION_SYSTEM + "=yes|no").PadRight(20, ' ') + "Include system queries. Default is no.");
-            Console.WriteLine(("  " + OPTION_WAITS + "=yes|no").PadRight(20, ' ') + "Include wait events or no. Default is yes.");
+            Console.WriteLine(("  " + OPTION_WAITS + "=yes|no").PadRight(20, ' ') + "Include wait events or no. Default is no.");
         }
 
         private void ParseArguments(string[] args, out ReportSettings settings)
