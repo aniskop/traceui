@@ -202,7 +202,7 @@ namespace TraceUI.Reports
         {
             if (binds != null && binds.Binds != null)
             {
-                WriteLine("with params:");
+                WriteNameAndPosition("with params", binds);
                 foreach (BindEntry bind in binds.Binds)
                 {
                     if (bind.HasMetadata)
