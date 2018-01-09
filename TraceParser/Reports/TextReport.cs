@@ -207,7 +207,14 @@ namespace TraceUI.Reports
                 {
                     if (bind.HasMetadata)
                     {
-                        WriteLine(string.Format("  bind{0} = {1}", bind.Index, bind.Value));
+                        if (bind.Value == null || "".Equals(bind.Value))
+                        {
+                            WriteLine("  bind{0} is null", bind.Index);
+                        }
+                        else
+                        {
+                            WriteLine(string.Format("  bind{0} = {1}", bind.Index, bind.Value));
+                        }
                         WriteLine("    datatype      = {0}", OracleDatatype.ToString(bind.Datatype.Value));
                         WriteLine("    actual length = {0} bytes", bind.ActualLength.Value);
                         WriteLine("    max length    = {0} bytes", bind.MaxLength.Value);
