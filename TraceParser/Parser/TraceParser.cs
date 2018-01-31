@@ -27,6 +27,11 @@ namespace TraceUI.Parser
         private const string RPC_EXEC = "RPC EXEC:";
         private const string DOUBLE_SPACE = "  ";
 
+        private const string VALUE_TERMINATOR = "\"";
+        // Text of the value property can be trimmed, if it is very long.
+        // For instance, value="The very long value t"...
+        private const string TRIMMED_VALUE_TERMINATOR = "\"...";
+
         private const string NO_DATA_FOR_BIND = "  No oacdef for this bind.";
 
         private TraceLexer lexer;
@@ -463,22 +468,19 @@ namespace TraceUI.Parser
             if (lexer.CurrentChar == TraceLexer.DOUBLE_QUOT)
             {
                 // String property, can be multi-line.
-                bool singleLineValue = (lexer.CurrentLine.EndsWith("\""));
-                if (singleLineValue)
+                StringBuilder value = new StringBuilder();
+                bool endOfValueAtCurrentLine = false;
+
+                while (!endOfValueAtCurrentLine)
                 {
-                    result.Add(new StringProperty(Property.VALUE, lexer.ReadLine()));
-                }
-                else
-                {
-                    StringBuilder value = new StringBuilder();
-                    while (!lexer.CurrentLine.EndsWith("\""))
+                    value.AppendLine(lexer.ReadLine());
+                    endOfValueAtCurrentLine = lexer.CurrentLine.EndsWith(VALUE_TERMINATOR) || lexer.CurrentLine.EndsWith(TRIMMED_VALUE_TERMINATOR);
+                    if (!endOfValueAtCurrentLine)
                     {
-                        value.AppendLine(lexer.ReadLine());
                         lexer.NextLine();
                     }
-                    value.AppendLine(lexer.ReadLine()); // Read the last line of value
-                    result.Add(new StringProperty(Property.VALUE, value.ToString()));
                 }
+                result.Add(new StringProperty(Property.VALUE, value.ToString()));
             }
             else
             {
