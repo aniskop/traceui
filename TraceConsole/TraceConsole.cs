@@ -129,6 +129,10 @@ namespace TraceUI.CommandLine
         private string GenerateReportFilePath(string sourceFilePath)
         {
             string directory = Path.GetDirectoryName(sourceFilePath);
+            if (string.IsNullOrEmpty(directory))
+            {
+                directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetName().CodeBase);
+            }
             string name = Path.GetFileNameWithoutExtension(sourceFilePath);
             return directory + "\\" + name + ".report.txt";
         }

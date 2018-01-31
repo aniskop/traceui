@@ -2,7 +2,6 @@
 using TraceUI.Parser;
 using TraceUI.Reports.Events;
 using TraceUI.Parser.Events;
-using TraceUI.Parser.Entries;
 
 namespace TraceUI.Reports
 {

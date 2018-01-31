@@ -245,9 +245,12 @@ namespace TraceUI.Reports
                 Hr();
                 WriteNameAndPosition("FETCH", entry);
                 WriteLine("  rows            = {0}", entry.Rows.Value.ToString());
+                WriteLine("  cursor#         = {0}", entry.CursorId);
                 WriteLine("  elapsed         = {0} us", entry.Elapsed.Value.ToString());
                 WriteLine("  recursive depth = {0}", entry.Depth.Value.ToString());
                 WriteLine("  optimizer goal  = {0}", OptimizerGoal.ToString(entry.OptimizerGoal.Value));
+                NewLine();
+                WriteTrimmedStatement(GetCursorFromCache(entry.CursorId));
             }
         }
 
@@ -437,7 +440,11 @@ namespace TraceUI.Reports
 
         private void WriteTrimmedStatement(ParsingInCursorEntry entry)
         {
-            if (entry.Statement.Length > STATEMENT_TRIM_LENGTH)
+            if (string.IsNullOrEmpty(entry.Statement))
+            {
+                WriteLine("  < Statement text not in this trace file. >");
+            }
+            else if (entry.Statement.Length > STATEMENT_TRIM_LENGTH)
             {
                 WriteLine(entry.Statement.Substring(0, STATEMENT_TRIM_LENGTH) + "...");
             }

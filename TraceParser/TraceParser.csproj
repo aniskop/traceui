@@ -46,6 +46,7 @@
     <Compile Include="Parser\Entries\CloseEntry.cs" />
     <Compile Include="Parser\Entries\ExecEntry.cs" />
     <Compile Include="Parser\Entries\FetchEntry.cs" />
+    <Compile Include="Parser\Entries\ParseErrorEntry.cs" />
     <Compile Include="Parser\OptimizerGoal.cs" />
     <Compile Include="Parser\OracleDatatype.cs" />
     <Compile Include="Parser\Entries\UnrecognizedEntry.cs" />
