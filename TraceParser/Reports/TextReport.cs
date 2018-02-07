@@ -13,6 +13,7 @@ namespace TraceUI.Reports
     {
 
         private const int STATEMENT_TRIM_LENGTH = 100;
+        private static readonly ULongProperty EMPTY_TIMESTAMP = new ULongProperty("", 0UL);
 
         private StreamWriter eventsTempFile;
 
@@ -24,6 +25,8 @@ namespace TraceUI.Reports
 
         private TraceEntry previousEntry;
         private TraceEntry currentEntry;
+
+        private ulong traceStartTimestamp = 0UL;
 
         private const string HORIZONTAL_LINE = "=================================================";
 
@@ -66,9 +69,51 @@ namespace TraceUI.Reports
             currentEntry = entry;
         }
 
-        private void WriteNameAndPosition(string name, TraceEntry entry)
+        #region Output writers and auxiliary API
+        private void WriteEntryHeader(string name, TraceEntry entry, ULongProperty entryTimestamp)
         {
-            WriteLine(string.Format("{0} (line {1})", name, entry.LineRange.Start));
+            if (entryTimestamp.Value != EMPTY_TIMESTAMP.Value)
+            {
+                WriteLine(string.Format("{0} (line {1}, time offset {2})", name, entry.LineRange.Start, FormatDuration(entryTimestamp.Value - traceStartTimestamp)));
+            }
+            else
+            {
+                // Entry has no timestamp
+                WriteLine(string.Format("{0} (line {1})", name, entry.LineRange.Start));
+            }
+        }
+
+        private void WriteEntryHeader(string name, TraceEntry entry)
+        {
+            WriteEntryHeader(name, entry, EMPTY_TIMESTAMP);
+        }
+
+        private string FormatDuration(ulong durationMicroSeconds)
+        {
+            const ulong SECOND = 1000000UL; // Microseconds in 1 second
+            const long SECONDS_IN_MINUTE = 60L;
+            const long SECONDS_IN_HOUR = 60L * SECONDS_IN_MINUTE; // Seconds in 1 hour
+
+            long hours = 0;
+            long minutes = 0;
+            long seconds = 0;
+            int microSeconds = 0;
+
+            if (durationMicroSeconds < SECOND)
+            {
+                microSeconds = (int)durationMicroSeconds;
+            }
+            else
+            {
+                microSeconds = (int)(durationMicroSeconds % SECOND);
+            }
+
+            ulong totalSeconds = durationMicroSeconds / SECOND;
+
+            hours = Math.DivRem((long)totalSeconds, SECONDS_IN_HOUR, out seconds);
+            minutes = Math.DivRem(seconds, SECONDS_IN_MINUTE, out seconds);
+
+            return string.Format("{0}:{1}:{2}.{3}", hours, minutes, seconds, microSeconds);
         }
 
         private void AddCursorToCache(ParsingInCursorEntry entry)
@@ -155,6 +200,15 @@ namespace TraceUI.Reports
             eventsTempFile.WriteLine();
         }
 
+        private void SetTraceStartTimestamp(ULongProperty timestamp)
+        {
+            if (traceStartTimestamp == EMPTY_TIMESTAMP.Value)
+            {
+                traceStartTimestamp = timestamp.Value;
+            }
+        }
+        #endregion
+
         #region Events listeners
         protected override void Parser_BindsDetected(object sender, BindsEventArgs e)
         {
@@ -165,7 +219,9 @@ namespace TraceUI.Reports
 
         protected override void Parser_CloseDetected(object sender, CloseEventArgs e)
         {
-            SetCurrentEntry(e.Value);
+            CloseEntry entry = e.Value;
+            SetCurrentEntry(entry);
+            SetTraceStartTimestamp(entry.Timestamp);
         }
 
         protected override void Parser_EndOfTraceReached(object sender, EventArgs e)
@@ -176,12 +232,14 @@ namespace TraceUI.Reports
         {
             ExecEntry entry = e.Value;
             SetCurrentEntry(entry);
+            SetTraceStartTimestamp(entry.Timestamp);
+
             ParsingInCursorEntry cursor = GetCursorFromCache(entry.CursorId);
 
             if (MustBeIncluded(cursor))
             {
                 Hr();
-                WriteNameAndPosition("EXECUTE", entry);
+                WriteEntryHeader("EXECUTE", entry, entry.Timestamp);
                 WriteLine("  cursor#        = {0}", entry.CursorId);
                 WriteLine("  sqlid          = {0}", cursor.SqlId.Value);
                 WriteLine("  elapsed        = {0} us", entry.Elapsed.Value);
@@ -202,7 +260,7 @@ namespace TraceUI.Reports
         {
             if (binds != null && binds.Binds != null)
             {
-                WriteNameAndPosition("with params", binds);
+                WriteEntryHeader("with params", binds);
                 foreach (BindEntry bind in binds.Binds)
                 {
                     if (bind.HasMetadata)
@@ -239,11 +297,12 @@ namespace TraceUI.Reports
         {
             FetchEntry entry = e.Value;
             SetCurrentEntry(e.Value);
+            SetTraceStartTimestamp(entry.Timestamp);
 
             if (MustBeIncluded(entry.CursorId))
             {
                 Hr();
-                WriteNameAndPosition("FETCH", entry);
+                WriteEntryHeader("FETCH", entry, entry.Timestamp);
                 WriteLine("  rows            = {0}", entry.Rows.Value.ToString());
                 WriteLine("  cursor#         = {0}", entry.CursorId);
                 WriteLine("  elapsed         = {0} us", entry.Elapsed.Value.ToString());
@@ -258,13 +317,14 @@ namespace TraceUI.Reports
         {
             ParseEntry entry = e.Value;
             SetCurrentEntry(e.Value);
+            SetTraceStartTimestamp(entry.Timestamp);
 
             ParsingInCursorEntry cursor = GetCursorFromCache(entry.CursorId);
 
             if (MustBeIncluded(cursor))
             {
                 Hr();
-                WriteNameAndPosition("PARSE", entry);
+                WriteEntryHeader("PARSE", entry, entry.Timestamp);
                 WriteLine("  cursor#        = {0}", cursor.CursorId);
                 WriteLine("  sqlid          = {0}", cursor.SqlId.Value);
                 WriteLine("  elapsed        = {0} us", entry.Elapsed.Value);
@@ -284,7 +344,7 @@ namespace TraceUI.Reports
             if (MustBeIncluded(cursor))
             {
                 NewLine();
-                WriteNameAndPosition("STATS", entry);
+                WriteEntryHeader("STATS", entry);
                 WriteLine("  cursor# = {0}", entry.CursorId);
                 NewLine();
 
@@ -302,13 +362,14 @@ namespace TraceUI.Reports
         {
             WaitEntry entry = e.Value;
             SetCurrentEntry(e.Value);
+            SetTraceStartTimestamp(entry.Timestamp);
 
             ParsingInCursorEntry cursor = GetCursorFromCache(entry.CursorId);
 
             if (MustBeIncluded(entry) && MustBeIncluded(cursor))
             {
                 Hr();
-                WriteNameAndPosition("WAIT", entry);
+                WriteEntryHeader("WAIT", entry, entry.Timestamp);
                 WriteLine("  name      = {0}", entry.Name.Value);
                 //todo: depends on Oracle version, because <9 in centiseconds
                 WriteLine("  elapsed   = {0} us", entry.Elapsed.Value);
@@ -328,13 +389,14 @@ namespace TraceUI.Reports
         {
             ParsingInCursorEntry entry = e.Value;
             SetCurrentEntry(entry);
+            SetTraceStartTimestamp(entry.Timestamp);
             AddCursorToCache(entry);
             RemoveBindsFromCache(entry.CursorId);
 
             if (MustBeIncluded(entry))
             {
                 Hr();
-                WriteNameAndPosition("PARSING IN CURSOR", entry);
+                WriteEntryHeader("PARSING IN CURSOR", entry, entry.Timestamp);
                 WriteLine("  cursor#          = {0}", entry.CursorId);
                 WriteLine("  sqlid            = {0}", entry.SqlId.Value);
                 WriteLine("  hash value       = {0}", entry.HashValue.Value);
@@ -351,9 +413,10 @@ namespace TraceUI.Reports
         {
             XctendEntry entry = e.Value;
             SetCurrentEntry(e.Value);
+            SetTraceStartTimestamp(entry.Timestamp);
 
             Hr();
-            WriteNameAndPosition("END OF TRANSACTION", entry);
+            WriteEntryHeader("END OF TRANSACTION", entry, entry.Timestamp);
             WriteCommitRollback(entry);
         }
 
@@ -361,6 +424,7 @@ namespace TraceUI.Reports
         {
             UnrecognizedEntry entry = e.Value;
             SetCurrentEntry(entry);
+
             if (!entry.Text.StartsWith("====================="))
             {
                 WriteLine(entry.Text);

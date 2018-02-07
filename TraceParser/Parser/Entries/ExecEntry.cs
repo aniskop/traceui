@@ -114,7 +114,7 @@ namespace TraceUI.Parser.Entries
         /// <summary>
         /// Time when event occured.
         /// </summary>
-        public ULongProperty Time
+        public ULongProperty Timestamp
         {
             get;
             private set;
@@ -166,7 +166,7 @@ namespace TraceUI.Parser.Entries
                 }
                 else if (p.Name.Equals(Property.TIMESTAMP))
                 {
-                    Time = ULongProperty.Convert(p);
+                    Timestamp = ULongProperty.Convert(p);
                 }
             }
         }

@@ -72,7 +72,7 @@ namespace TraceUI.Parser.Entries
             private set;
         }
 
-        public ULongProperty Tim
+        public ULongProperty Timestamp
         {
             get;
             private set;
@@ -124,7 +124,7 @@ namespace TraceUI.Parser.Entries
                 }
                 else if (p.Name.Equals(Property.TIMESTAMP))
                 {
-                    Tim = ULongProperty.Convert(p);
+                    Timestamp = ULongProperty.Convert(p);
                 }
             }
         }
