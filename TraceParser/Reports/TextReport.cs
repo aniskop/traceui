@@ -30,6 +30,10 @@ namespace TraceUI.Reports
 
         private const string HORIZONTAL_LINE = "=================================================";
 
+        private const long SECOND = 1000000L; // Microseconds in 1 second
+        private const long SECONDS_IN_MINUTE = 60L;
+        private const long SECONDS_IN_HOUR = 60L * SECONDS_IN_MINUTE; // Seconds in 1 hour
+
         /// <summary>
         /// Creates an instance of text report generator.
         /// </summary>
@@ -74,7 +78,7 @@ namespace TraceUI.Reports
         {
             if (entryTimestamp.Value != EMPTY_TIMESTAMP.Value)
             {
-                WriteLine(string.Format("{0} (line {1}, time offset {2})", name, entry.LineRange.Start, FormatDuration(entryTimestamp.Value - traceStartTimestamp)));
+                WriteLine(string.Format("{0} (line {1}, time offset {2})", name, entry.LineRange.Start, FormatDuration((long)(entryTimestamp.Value - traceStartTimestamp))));
             }
             else
             {
@@ -88,12 +92,8 @@ namespace TraceUI.Reports
             WriteEntryHeader(name, entry, EMPTY_TIMESTAMP);
         }
 
-        private string FormatDuration(ulong durationMicroSeconds)
+        private string FormatDuration(long durationMicroSeconds)
         {
-            const ulong SECOND = 1000000UL; // Microseconds in 1 second
-            const long SECONDS_IN_MINUTE = 60L;
-            const long SECONDS_IN_HOUR = 60L * SECONDS_IN_MINUTE; // Seconds in 1 hour
-
             long hours = 0;
             long minutes = 0;
             long seconds = 0;
@@ -106,14 +106,19 @@ namespace TraceUI.Reports
             else
             {
                 microSeconds = (int)(durationMicroSeconds % SECOND);
+                seconds = durationMicroSeconds / SECOND;
+
+                if (seconds >= SECONDS_IN_HOUR)
+                {
+                    hours = Math.DivRem(seconds, SECONDS_IN_HOUR, out seconds);
+                }
+                if (seconds >= SECONDS_IN_MINUTE)
+                {
+                    minutes = Math.DivRem(seconds, SECONDS_IN_MINUTE, out seconds);
+                }
             }
 
-            ulong totalSeconds = durationMicroSeconds / SECOND;
-
-            hours = Math.DivRem((long)totalSeconds, SECONDS_IN_HOUR, out seconds);
-            minutes = Math.DivRem(seconds, SECONDS_IN_MINUTE, out seconds);
-
-            return string.Format("{0}:{1}:{2}.{3}", hours, minutes, seconds, microSeconds);
+            return string.Format("{0}:{1}:{2}.{3}", hours, minutes, seconds, Convert.ToString(microSeconds).PadLeft(6, '0'));
         }
 
         private void AddCursorToCache(ParsingInCursorEntry entry)
