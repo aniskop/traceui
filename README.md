@@ -28,3 +28,7 @@ Translate Oracle trace using default options (skip system queries, skip waits) t
 ```
 traceuic c:\temp\mytrace.trc c:\temp\mytrace.txt
 ```
+
+# Known issues
+1. Bind variable might not be parsed and displayed correctly when bind entry contains something like memory dump. Then binds from different statement along with `EXEC` and other text might be displayed.
+2. Time offset from the start of the trace file might be displayed incorrectly in some cases (situation not reproduced for now). It seems the reason is when under some circumstances `tim` property of the entry is less than the `tim` of the previous one, but should be greater.
