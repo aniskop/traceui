@@ -15,9 +15,7 @@ namespace TraceUI.Reports
         private const int STATEMENT_TRIM_LENGTH = 100;
         private static readonly ULongProperty EMPTY_TIMESTAMP = new ULongProperty("", 0UL);
 
-        private StreamWriter eventsTempFile;
-
-        private string eventsTempFilePath;
+        private StreamWriter reportFile;
         private string reportFilePath;
 
         private Dictionary<string, ParsingInCursorEntry> cursorsCache;
@@ -53,18 +51,12 @@ namespace TraceUI.Reports
 
         public override void Generate()
         {
-            GenerateTempFiles();
-            OpenTempFilesForWrite();
+            OpenReportFileForWrite();
             cursorsCache.Clear();
             Parser.Parse();
             WriteFooter();
-            CloseTempFiles();
+            CloseReportFile();
             OnProgressChanged(this, 100);
-            if (File.Exists(reportFilePath))
-            {
-                File.Delete(reportFilePath);
-            }
-            File.Move(eventsTempFilePath, reportFilePath);
         }
 
         private void SetCurrentEntry(TraceEntry entry)
@@ -177,32 +169,32 @@ namespace TraceUI.Reports
 
         private void WriteLine(string text)
         {
-            eventsTempFile.WriteLine(text);
+            reportFile.WriteLine(text);
         }
 
         private void WriteLine(string template, string value)
         {
-            eventsTempFile.WriteLine(template, value);
+            reportFile.WriteLine(template, value);
         }
 
         private void WriteLine(string template, long value)
         {
-            eventsTempFile.WriteLine(template, value);
+            reportFile.WriteLine(template, value);
         }
 
         private void WriteLine(string template, int value)
         {
-            eventsTempFile.WriteLine(template, value);
+            reportFile.WriteLine(template, value);
         }
 
         private void WriteLine(string template, ulong value)
         {
-            eventsTempFile.WriteLine(template, value);
+            reportFile.WriteLine(template, value);
         }
 
         private void NewLine()
         {
-            eventsTempFile.WriteLine();
+            reportFile.WriteLine();
         }
 
         private void SetTraceStartTimestamp(ULongProperty timestamp)
@@ -437,33 +429,23 @@ namespace TraceUI.Reports
         }
         #endregion
 
-        private void GenerateTempFiles()
+        private void OpenReportFileForWrite()
         {
-            eventsTempFilePath = Path.GetTempFileName();
+            reportFile = new StreamWriter(reportFilePath);
         }
 
-        private void OpenTempFilesForWrite()
+        private void CloseReportFile()
         {
-            eventsTempFile = new StreamWriter(eventsTempFilePath);
-        }
-
-        private void DeleteTempFiles()
-        {
-            File.Delete(eventsTempFilePath);
-        }
-
-        private void CloseTempFiles()
-        {
-            if (eventsTempFile != null)
+            if (reportFile != null)
             {
-                eventsTempFile.Close();
+                reportFile.Close();
             }
         }
 
         private void WriteFooter()
         {
-            eventsTempFile.WriteLine();
-            eventsTempFile.WriteLine("For details on reading raw trace output refer to \"Interpreting Raw SQL_TRACE output (Doc ID 39817.1)\" at support.oracle.com (ex Metalink).");
+            reportFile.WriteLine();
+            reportFile.WriteLine("For details on reading raw trace output refer to \"Interpreting Raw SQL_TRACE output (Doc ID 39817.1)\" at support.oracle.com (ex Metalink).");
         }
         /// <summary>
         /// Checks whether information realated to given cursor must be inluded in the report.
@@ -487,7 +469,7 @@ namespace TraceUI.Reports
 
         private void Hr()
         {
-            eventsTempFile.WriteLine(HORIZONTAL_LINE);
+            reportFile.WriteLine(HORIZONTAL_LINE);
         }
 
         private void Parser_ProgressChanged(object sender, ParserProgressChangedEventArgs e)

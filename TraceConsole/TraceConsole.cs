@@ -11,8 +11,8 @@ namespace TraceUI.CommandLine
 
     public class TraceConsole
     {
-        private const string OPTION_SYSTEM = "--sys";
-        private const string OPTION_WAITS = "--wait";
+        private const string INCLUDE_SYSTEM_CALLS_OPTION = "--sys";
+        private const string INCLUDE_WAITS_OPTION = "--wait";
 
         private AsciiProgressBar bar;
 
@@ -66,8 +66,8 @@ namespace TraceUI.CommandLine
             Console.WriteLine("Converts Oracle trace file into more readable format.\n");
             Console.WriteLine("Usage: traceuic [options] trace_file_path [result_file_path]\n");
             Console.WriteLine("Options:");
-            Console.WriteLine(("  " + OPTION_SYSTEM + "=yes|no").PadRight(20, ' ') + "Include system queries. Default is no.");
-            Console.WriteLine(("  " + OPTION_WAITS + "=yes|no").PadRight(20, ' ') + "Include wait events or no. Default is no.");
+            Console.WriteLine(("  " + INCLUDE_SYSTEM_CALLS_OPTION + "=yes|no").PadRight(20, ' ') + "Include system queries. Default is no.");
+            Console.WriteLine(("  " + INCLUDE_WAITS_OPTION + "=yes|no").PadRight(20, ' ') + "Include wait events or no. Default is no.");
         }
 
         private void ParseArguments(string[] args, out ReportSettings settings)
@@ -86,11 +86,11 @@ namespace TraceUI.CommandLine
 
                 if (args[i].StartsWith("--"))
                 {
-                    if (args[i].StartsWith(OPTION_SYSTEM))
+                    if (args[i].StartsWith(INCLUDE_SYSTEM_CALLS_OPTION))
                     {
                         settings.IncludeSystemQueries = ParseBooleanProperty(args[i]);
                     }
-                    else if (args[i].StartsWith(OPTION_WAITS))
+                    else if (args[i].StartsWith(INCLUDE_WAITS_OPTION))
                     {
                         settings.IncludeWaits = ParseBooleanProperty(args[i]);
                     }
@@ -111,7 +111,7 @@ namespace TraceUI.CommandLine
 
             if (i < args.Length)
             {
-                resultFilePath = args[i + 1];
+                resultFilePath = args[i];
                 resultFilePresent = true;
             }
             else
